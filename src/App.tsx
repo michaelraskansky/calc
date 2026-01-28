@@ -14,7 +14,10 @@ function App() {
   }, []);
 
   function createTodo() {
-    client.models.Todo.create({ content: window.prompt("Todo content") });
+    const content = window.prompt("Todo content");
+    if (content && content.trim()) {
+      client.models.Todo.create({ content });
+    }
   }
 
   return (
