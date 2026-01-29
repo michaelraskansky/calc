@@ -6,10 +6,15 @@ const client = generateClient<Schema>();
 
 function App() {
   const [todos, setTodos] = useState<Array<Schema["Todo"]["type"]>>([]);
+  const [history, setHistory] = useState<Array<Schema["Todo"]["type"]>>([]);
 
   useEffect(() => {
     client.models.Todo.observeQuery().subscribe({
-      next: (data) => setTodos([...data.items]),
+      next: (data) => {
+        const items = [...data.items];
+        setTodos(items);
+        setHistory(items.slice(-15).reverse());
+      },
     });
   }, []);
 
@@ -26,6 +31,14 @@ function App() {
           <li key={todo.id}>{todo.content}</li>
         ))}
       </ul>
+      <div>
+        <h2>History (Last 15 items)</h2>
+        <ul>
+          {history.map((todo) => (
+            <li key={todo.id}>{todo.content}</li>
+          ))}
+        </ul>
+      </div>
       <div>
         🥳 App successfully hosted. Try creating a new todo.
         <br />
