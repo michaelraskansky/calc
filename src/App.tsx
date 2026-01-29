@@ -14,7 +14,11 @@ function App() {
   }, []);
 
   function createTodo() {
-    client.models.Todo.create({ content: window.prompt("Todo content") });
+    const content = window.prompt("Todo content");
+    if (content) {
+      const dueDate = window.prompt("Due date (YYYY-MM-DD, optional)");
+      client.models.Todo.create({ content, dueDate: dueDate || undefined });
+    }
   }
 
   return (
@@ -23,7 +27,12 @@ function App() {
       <button onClick={createTodo}>+ new</button>
       <ul>
         {todos.map((todo) => (
-          <li key={todo.id}>{todo.content}</li>
+          <li key={todo.id}>
+            {todo.content}
+            {todo.dueDate && <span style={{ marginLeft: '10px', color: '#666' }}>
+              (Due: {todo.dueDate})
+            </span>}
+          </li>
         ))}
       </ul>
       <div>
