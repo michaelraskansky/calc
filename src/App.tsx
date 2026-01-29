@@ -6,6 +6,7 @@ const client = generateClient<Schema>();
 
 function App() {
   const [todos, setTodos] = useState<Array<Schema["Todo"]["type"]>>([]);
+  const [sortAscending, setSortAscending] = useState(true);
 
   useEffect(() => {
     client.models.Todo.observeQuery().subscribe({
@@ -17,12 +18,29 @@ function App() {
     client.models.Todo.create({ content: window.prompt("Todo content") });
   }
 
+  function toggleSort() {
+    setSortAscending(!sortAscending);
+  }
+
+  const sortedTodos = [...todos].sort((a, b) => {
+    const contentA = a.content?.toLowerCase() || "";
+    const contentB = b.content?.toLowerCase() || "";
+    if (sortAscending) {
+      return contentA.localeCompare(contentB);
+    } else {
+      return contentB.localeCompare(contentA);
+    }
+  });
+
   return (
     <main>
       <h1>My todos</h1>
       <button onClick={createTodo}>+ new</button>
+      <button onClick={toggleSort}>
+        Sort: {sortAscending ? "A-Z" : "Z-A"}
+      </button>
       <ul>
-        {todos.map((todo) => (
+        {sortedTodos.map((todo) => (
           <li key={todo.id}>{todo.content}</li>
         ))}
       </ul>
