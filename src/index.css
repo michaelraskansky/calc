@@ -7,6 +7,12 @@ body {
   width: 100vw;
   justify-content: center;
   align-items: center;
+  transition: background 0.3s ease;
+}
+
+body[data-theme="dark"] {
+  background: linear-gradient(180deg, rgb(30, 20, 60), rgb(20, 20, 20));
+  color: #e0e0e0;
 }
 
 main {
@@ -26,6 +32,7 @@ button {
   cursor: pointer;
   transition: border-color 0.25s;
   color: white;
+  margin: 4px;
 }
 button:hover {
   border-color: #646cff;
@@ -33,6 +40,15 @@ button:hover {
 button:focus,
 button:focus-visible {
   outline: 4px auto -webkit-focus-ring-color;
+}
+
+body[data-theme="dark"] button {
+  background-color: #4a4a6a;
+  color: #e0e0e0;
+}
+
+body[data-theme="dark"] button:hover {
+  border-color: #8888ff;
 }
 
 ul {
@@ -50,6 +66,11 @@ ul {
   overflow: auto;
 }
 
+body[data-theme="dark"] ul {
+  border: 1px solid #4a4a4a;
+  background-color: #1a1a1a;
+}
+
 li {
   background-color: white;
   padding: 8px;
@@ -57,6 +78,15 @@ li {
 
 li:hover {
   background: #dadbf9;
+}
+
+body[data-theme="dark"] li {
+  background-color: #2a2a2a;
+  color: #e0e0e0;
+}
+
+body[data-theme="dark"] li:hover {
+  background: #3a3a5a;
 }
 
 a {
