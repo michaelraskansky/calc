@@ -6,6 +6,7 @@ const client = generateClient<Schema>();
 
 function App() {
   const [todos, setTodos] = useState<Array<Schema["Todo"]["type"]>>([]);
+  const [lastDeleted, setLastDeleted] = useState<Schema["Todo"]["type"] | null>(null);
 
   useEffect(() => {
     client.models.Todo.observeQuery().subscribe({
@@ -17,13 +18,34 @@ function App() {
     client.models.Todo.create({ content: window.prompt("Todo content") });
   }
 
+  function deleteTodo(id: string) {
+    const todoToDelete = todos.find((todo) => todo.id === id);
+    if (todoToDelete) {
+      setLastDeleted(todoToDelete);
+      client.models.Todo.delete({ id });
+    }
+  }
+
+  function undoDelete() {
+    if (lastDeleted) {
+      client.models.Todo.create({ content: lastDeleted.content });
+      setLastDeleted(null);
+    }
+  }
+
   return (
     <main>
       <h1>My todos</h1>
       <button onClick={createTodo}>+ new</button>
+      <button onClick={undoDelete} disabled={!lastDeleted}>
+        ↶ undo
+      </button>
       <ul>
         {todos.map((todo) => (
-          <li key={todo.id}>{todo.content}</li>
+          <li key={todo.id}>
+            {todo.content}
+            <button onClick={() => deleteTodo(todo.id)}>Delete</button>
+          </li>
         ))}
       </ul>
       <div>
