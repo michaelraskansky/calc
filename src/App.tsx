@@ -6,6 +6,7 @@ const client = generateClient<Schema>();
 
 function App() {
   const [todos, setTodos] = useState<Array<Schema["Todo"]["type"]>>([]);
+  const [priorityFilter, setPriorityFilter] = useState<string>("All");
 
   useEffect(() => {
     client.models.Todo.observeQuery().subscribe({
@@ -14,16 +15,39 @@ function App() {
   }, []);
 
   function createTodo() {
-    client.models.Todo.create({ content: window.prompt("Todo content") });
+    const content = window.prompt("Todo content");
+    const priority = window.prompt("Priority (Low/Medium/High)", "Medium") as "Low" | "Medium" | "High";
+    if (content && priority) {
+      client.models.Todo.create({ content, priority });
+    }
   }
+
+  const filteredTodos = priorityFilter === "All"
+    ? todos
+    : todos.filter(todo => todo.priority === priorityFilter);
 
   return (
     <main>
       <h1>My todos</h1>
       <button onClick={createTodo}>+ new</button>
+      <div>
+        <label htmlFor="priority-filter">Filter by priority: </label>
+        <select
+          id="priority-filter"
+          value={priorityFilter}
+          onChange={(e) => setPriorityFilter(e.target.value)}
+        >
+          <option value="All">All</option>
+          <option value="Low">Low</option>
+          <option value="Medium">Medium</option>
+          <option value="High">High</option>
+        </select>
+      </div>
       <ul>
-        {todos.map((todo) => (
-          <li key={todo.id}>{todo.content}</li>
+        {filteredTodos.map((todo) => (
+          <li key={todo.id}>
+            [{todo.priority}] {todo.content}
+          </li>
         ))}
       </ul>
       <div>
