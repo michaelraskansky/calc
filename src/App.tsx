@@ -6,6 +6,7 @@ const client = generateClient<Schema>();
 
 function App() {
   const [todos, setTodos] = useState<Array<Schema["Todo"]["type"]>>([]);
+  const [isDarkMode, setIsDarkMode] = useState(false);
 
   useEffect(() => {
     client.models.Todo.observeQuery().subscribe({
@@ -17,9 +18,22 @@ function App() {
     client.models.Todo.create({ content: window.prompt("Todo content") });
   }
 
+  function toggleDarkMode() {
+    setIsDarkMode(!isDarkMode);
+  }
+
+  useEffect(() => {
+    if (isDarkMode) {
+      document.body.classList.add('dark-mode');
+    } else {
+      document.body.classList.remove('dark-mode');
+    }
+  }, [isDarkMode]);
+
   return (
     <main>
       <h1>My todos</h1>
+      <button onClick={toggleDarkMode}>{isDarkMode ? '☀️' : '🌙'} Toggle Dark Mode</button>
       <button onClick={createTodo}>+ new</button>
       <ul>
         {todos.map((todo) => (
