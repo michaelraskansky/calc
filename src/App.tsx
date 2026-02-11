@@ -1,6 +1,7 @@
 import { useEffect, useState } from "react";
 import type { Schema } from "../amplify/data/resource";
 import { generateClient } from "aws-amplify/data";
+import { divide } from "./utils";
 
 const client = generateClient<Schema>();
 
@@ -17,10 +18,18 @@ function App() {
     client.models.Todo.create({ content: window.prompt("Todo content") });
   }
 
+  function testDivision() {
+    console.log("Testing division function:");
+    console.log("10 / 2 =", divide(10, 2));
+    console.log("15 / 3 =", divide(15, 3));
+    console.log("10 / 0 =", divide(10, 0)); // This should trigger the warning
+  }
+
   return (
     <main>
       <h1>My todos</h1>
       <button onClick={createTodo}>+ new</button>
+      <button onClick={testDivision} style={{ marginLeft: '10px' }}>Test Division</button>
       <ul>
         {todos.map((todo) => (
           <li key={todo.id}>{todo.content}</li>
